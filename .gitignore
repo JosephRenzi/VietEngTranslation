@@ -205,3 +205,23 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+Security: NEVER commit your API keys
+
+.env
+.env.local
+
+Python compiled files (clutter)
+
+pycache/
+*.py[cod]
+
+Local Database Logs (don't commit your conversation history)
+
+*.db
+*.sqlite3
+
+IDE settings (optional)
+
+.vscode/
+.idea/
