@@ -3,6 +3,7 @@ from google.genai import types
 from .base_agent import BaseAgent
 from src.data.prompts import TRANSLATOR_SYSTEM_PROMPT
 from src.core.utils import performance_timer
+from src.tools.lexicon import lexicon
 
 class TranslatorAgent(BaseAgent):
     def __init__(self):
@@ -14,9 +15,24 @@ class TranslatorAgent(BaseAgent):
         Executes the translation task.
         """
         
-        # 1. Build the User Prompt
+        # Simple string matching to find relevant glossary terms
+        glossary_hits = []
+        # Check if source text contains any keys from our common phrases
+        # Note: Your current lexicon is Viet->Eng keys. If translating Eng->Viet, 
+        # you need a reverse lookup or a bidirectional dictionary.
+        for term, definition in lexicon.common_phrases.items():
+            if term in source_text.lower():
+                glossary_hits.append(f"{term}: {definition}")
+        
+        glossary_section = ""
+        if glossary_hits:
+            glossary_section = "### GLOSSARY (MANDATORY USE):\n" + "\n".join(glossary_hits)
+        # -------------------------------------
+
         user_prompt = f"""
         SOURCE TEXT: "{source_text}"
+        
+        {glossary_section}  <-- INJECT HERE
         
         CONTEXT PROFILE:
         {json.dumps(context, indent=2)}
